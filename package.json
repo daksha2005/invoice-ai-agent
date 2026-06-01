@@ -1,0 +1,11 @@
+{
+  "name": "invoice-ai-agent",
+  "version": "1.0.0",
+  "description": "Invoice AI Agent Pipeline",
+  "scripts": {
+    "dev": "python3 run.py",
+    "start": "python3 run.py",
+    "build": "wget -qO- https://bootstrap.pypa.io/get-pip.py | python3 - --user && python3 -m pip install --user -r requirements.txt"
+  },
+  "dependencies": {}
+}
