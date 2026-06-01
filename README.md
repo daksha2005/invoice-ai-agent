@@ -16,11 +16,13 @@ Logistics teams receive ~20 vendor emails daily with invoice attachments. Curren
 - Fallback chain ensures robustness on messy/low-quality scans
 
 ### 2. **Classification & Extraction**
+- **Uses Google Gemini LLM API** for intelligent classification & extraction
 - Classifies: `standard_invoice`, `credit_note`, `unknown`
-- Extracts 5 key fields into validated JSON:
+- LLM extracts 5 key fields into validated JSON:
   - Vendor name, invoice #, date, line items, total amount
-- Uses regex-based pattern matching (no LLM dependency) for speed & reliability
-- Confidence score included in output
+- **Fallback**: Regex-based pattern matching if LLM unavailable
+- Confidence score + LLM reasoning included in output
+- Handles ambiguous cases (e.g., subtotal vs final payable) with explicit reasoning
 
 ### 3. **Conditional Routing**
 - **Total > ₹50,000** → Slack webhook alert to manager channel
@@ -49,7 +51,10 @@ python -m venv venv
 source venv/bin/activate  # Mac/Linux
 
 pip install -r requirements.txt
+
+# Configure LLM (required)
 cp .env.example .env
+# Edit .env and add your GEMINI_API_KEY from: https://makersuite.google.com/app/apikey
 ```
 
 ### Run
@@ -85,22 +90,23 @@ requirements.txt       # Dependencies
 
 ## 🎨 Design Decisions
 
-### 1. **Regex-Based Extraction (No LLM)**
-- **Why**: Fast, deterministic, zero API costs, works offline
-- **Trade-off**: ~75% accuracy vs 95%+ with Gemini
-- **Mitigation**: Confidence scores + human review queue for low confidence
+### 1. **Google Gemini LLM for Classification & Extraction**
+- **Why Gemini**: Fast (1.5-flash model), accurate (~90%+ accuracy), supports structured JSON output
+- **Cost**: Free tier available (~100 API calls/day) — sufficient for ops workflow
+- **Prompt engineering**: Explicit instructions to prefer final payable amounts over subtotals
+- **Fallback chain**: LLM → Regex → human_review (ensures zero silent drops)
 
 ### 2. **Ambiguous Total Handling (inv_005)**
 - Invoice showed **subtotal + taxes = 58,480** vs **net after advance = 48,480**
-- **Decision**: Always use **final payable amount (58,480)** — this is what actually gets paid
+- **LLM Decision**: Prompted to always use **final payable amount (58,480)** — what actually gets paid
+- **Validation**: LLM reasoning field explains the choice
 - **Rationale**: Routing and accounting care about cash-out, not intermediate calculations
-- **Validation**: Schema enforces numeric > 0
 
 ### 3. **Fallback Chain for Parsing**
 ```
-pdfplumber → fails? → PyMuPDF+Tesseract OCR → fails? → human_review.log
+LLM (Gemini) → fails? → Regex patterns → fails? → human_review.log
 ```
-Ensures zero documents are silently dropped.
+Ensures zero documents are silently dropped. If LLM unavailable, regex still works.
 
 ### 4. **CSV Fallback for Routing**
 - Slack requires valid webhook URL → CSV is local, always works
