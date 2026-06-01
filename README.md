@@ -279,31 +279,12 @@ HUMAN_REVIEW_LOG_PATH=data/output/human_review.log
 ---
 
 ## 📦 Sample Output
+<img width="880" height="683" alt="image" src="https://github.com/user-attachments/assets/6a16e71d-7d36-4833-b8a6-365d8ca8046e" />
+
 
 See `sample_output/` folder:
 - `extracted_json/` — JSON extractions for all 10 docs
 - `routing_logs/` — Slack messages + CSV entries + human review flagged docs
-
----
-
-## 🚀 Bonus Features Implemented
-
-✅ **Exponential backoff retries** (tenacity library) on extraction failures  
-✅ **Confidence scores** on classification output  
-✅ **LLM reasoning** explaining ambiguous decisions  
-✅ **Error handling** — malformed LLM JSON caught and logged  
-✅ **Async processing** — FastAPI BackgroundTasks for webhook handler  
-✅ **Modular code** — Easy to extend or replace components  
-
----
-
-## 📈 Scalability Roadmap
-
-**Current**: 20 docs/day, single instance  
-**Phase 1** (No code change): Just scale horizontally (add more servers)  
-**Phase 2** (SQLite): 100 docs/day, database persistence  
-**Phase 3** (Celery + Redis): 1000 docs/day, distributed task queue  
-**Phase 4** (Microservices): Separate parsing/classification/routing services  
 
 ---
 
@@ -328,12 +309,5 @@ See `sample_output/` folder:
 
 ---
 
-**Status**: ✅ Production Ready  
-**Time to implement**: ~4 hours  
-**Maintainability**: High (modular, well-documented)  
-**Scalability**: Yes (stateless, horizontal scaling friendly)  
-
----
-
-**Author**: AI Automation Engineer Candidate  
-**Last Updated**: June 2024
+**Author**: Dhakshayini G, AI Automation Engineer Candidate  
+**Last Updated**: 1 June 2026
