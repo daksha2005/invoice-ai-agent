@@ -258,7 +258,7 @@ LLM Extraction → fails?
 ---
 
 ## 🎬 Video Walkthrough
-**[Link to Loom recording]** — Shows:
+**[https://drive.google.com/file/d/1A7xRn7r67RinmougVbK6lYE5D6s2tixx/view?usp=drivesdk]** — Shows:
 - ✓ Live pipeline execution on 10 sample files
 - ✓ Slack routing + CSV entry creation
 - ✓ Error handling (blank file input)
